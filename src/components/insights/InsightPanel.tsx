@@ -42,9 +42,21 @@ export function InsightPanel({
           );
           return;
         }
+        if (res.error === "gemini_config") {
+          toast.error(
+            "Gemini API key is missing. Add GEMINI_API_KEY to `.env.local` and restart the dev server.",
+          );
+          return;
+        }
+        if (res.error === "gemini_quota") {
+          toast.error(
+            "The Gemini API free tier quota is exhausted. Generate a new API key at aistudio.google.com/apikey or enable billing on your Google AI project.",
+          );
+          return;
+        }
         if (res.error === "gemini") {
           toast.error(
-            "We could not reach the AI service. Check GEMINI_API_KEY and try again.",
+            "We could not reach the AI service. Confirm GEMINI_API_KEY in `.env.local` and that the Generative Language API is enabled for your key.",
           );
           return;
         }

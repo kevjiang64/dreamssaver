@@ -7,7 +7,16 @@ import type { Mood } from "@/lib/constants";
 
 export type InsightActionResult =
   | { ok: true; already?: boolean }
-  | { error: "unauthorized" | "not_found" | "limit" | "gemini" | string };
+  | {
+      error:
+        | "unauthorized"
+        | "not_found"
+        | "limit"
+        | "gemini"
+        | "gemini_config"
+        | "gemini_quota"
+        | string;
+    };
 
 export async function generateInsightAction(
   dreamId: string,
@@ -55,7 +64,19 @@ export async function generateInsightAction(
       dream.mood_upon_waking as Mood,
       dream.is_lucid,
     );
-  } catch {
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    if (message.includes("GEMINI_API_KEY")) {
+      return { error: "gemini_config" };
+    }
+    const isQuotaError =
+      (err as { status?: number })?.status === 429 ||
+      message.includes("RESOURCE_EXHAUSTED") ||
+      message.includes("quota");
+    if (isQuotaError) {
+      return { error: "gemini_quota" };
+    }
+    console.error("[generateInsightAction]", err);
     return { error: "gemini" };
   }
 

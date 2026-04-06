@@ -1,15 +1,17 @@
-import { GoogleGenAI } from "@google/genai";
+import "server-only";
+
+import { GoogleGenAI } from "@google/genai/node";
 import type { Mood } from "@/lib/constants";
 import { buildDreamInsightPrompt } from "@/lib/ai/prompts";
 
-const MODEL = "gemini-2.0-flash";
+const MODEL = "gemini-2.5-flash";
 
 export async function generateDreamInsight(
   dreamText: string,
   mood: Mood,
   isLucid: boolean,
 ): Promise<string> {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY?.trim();
   if (!apiKey) {
     throw new Error("GEMINI_API_KEY is not configured");
   }

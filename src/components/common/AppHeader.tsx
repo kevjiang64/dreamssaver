@@ -26,6 +26,12 @@ export async function AppHeader({ variant }: { variant?: "marketing" | "app" }) 
               {variant === "app" && (
                 <>
                   <Link
+                    href="/upgrade"
+                    className={cn(buttonVariants({ variant: "default", size: "sm" }))}
+                  >
+                    Upgrade
+                  </Link>
+                  <Link
                     href="/dashboard"
                     className={cn(buttonVariants({ variant: "ghost", size: "sm" }))}
                   >
